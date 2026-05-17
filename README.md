@@ -1,120 +1,53 @@
-# Annuaire TSA — V4
+# Tableau de bord
 
-Projet open source communautaire pour les familles concernées par les troubles du spectre autistique (TSA).
+Dashboard personnel pour centraliser l'accès à vos services locaux (Jellyfin, Nginx, WikiJS, etc.).
 
-## Ce que contient le projet
+## Fonctionnalités
 
-### 1. Annuaire TSA
-Annuaire collaboratif et gratuit de praticiens spécialisés TSA : psychiatres, pédopsychiatres, psychologues, neuropsychologues, orthophonistes, ergothérapeutes et psychomotriciens.
-
-- Recherche par ville, département ou spécialité
-- Filtres par type de praticien, tranche d'âge et mode de consultation
-- Système de confirmation et signalement communautaire
-- Suggestion de praticiens par la communauté
-- Pages dédiées par département (`/departement/XX`) pour le SEO
-- Pagination (20 praticiens par page)
-- Bouton "Partager la fiche" sur chaque praticien
-
-### 2. Associations TSA (`/associations/`)
-Annuaire de 290 associations spécialisées dans les troubles du spectre autistique en France.
-
-- Associations de familles, de personnes concernées et de professionnels
-- Recherche par nom, ville, département ou service
-- Informations de contact : téléphone, email, site web
-- Services proposés, public concerné, description
-- Données issues d'Autisme Info Service (licence Apache 2.0)
-
-### 3. Livres TSA (`/livres/`)
-Sélection collaborative de livres sur le TSA.
-
-- **Grands classiques** — sélection éditoriale stockée en base de données
-- **Dernières parutions** — mises à jour automatiquement via Open Library (sans clé API)
-- Formulaire de suggestion de livres sans inscription
+- **Onglet Public** — services accessibles à tous
+- **Onglet Système** — services d'administration
+- **Mode édition** — ajouter, modifier, supprimer des services (protégé par mot de passe)
+- **Icônes officielles** via [Simple Icons](https://simpleicons.org)
+- **Données persistantes** stockées en JSON
 
 ## Stack technique
 
 | Composant | Technologie |
 |---|---|
 | Frontend | Nuxt 4 + Vue 3 + Nuxt UI + Tailwind CSS |
-| Backend | PHP 8.4 |
-| Base de données | MySQL |
-| Hébergement | LWS (serveur mutualisé) |
-| API externe | Open Library (nouveautés livres) |
-| Éditeur rich text | Tiptap |
-| Typage | TypeScript |
-| SEO | Bing Webmaster Tools + IndexNow + @nuxtjs/sitemap |
-| PWA | @vite-pwa/nuxt — installable sur mobile |
+| Backend | Nuxt server API (Node.js) |
+| Données | JSON local |
+| Containerisation | Docker + Docker Compose |
 
-## Accessibilité
+## Déploiement via Docker
 
-- **A- / A+** — taille de police réglable (4 niveaux)
-- **Mode lecture** — police OpenDyslexic, espacement augmenté, animations réduites
-- **Contraste élevé** — noir pur sur blanc pur pour les malvoyants
-- **Dark mode** — thème sombre selon les préférences système ou manuel
-- Disponible sur desktop (navbar) et mobile (menu hamburger)
-- `prefers-reduced-motion` respecté automatiquement
+### Prérequis
 
-## Structure des fichiers
+- Docker
+- Docker Compose
 
-```
-annuaire-tsa-nuxt/
-├── app/
-│   ├── app.vue                  # Point d'entrée avec NuxtLayout
-│   ├── app.config.ts            # Configuration Nuxt UI
-│   ├── assets/css/main.css      # Styles globaux + accessibilité
-│   ├── layouts/
-│   │   ├── default.vue          # Layout public (navbar + footer)
-│   │   └── admin.vue            # Layout admin isolé
-│   ├── composables/
-│   │   └── useApi.ts            # Appels API centralisés
-│   ├── types/
-│   │   └── index.ts             # Types TypeScript
-│   └── pages/
-│       ├── index.vue            # Page d'accueil annuaire
-│       ├── praticien/[id].vue   # Fiche détaillée praticien
-│       ├── departement/[num].vue # Praticiens par département
-│       ├── suggerer.vue         # Formulaire suggestion praticien
-│       ├── signaler.vue         # Signaler une erreur
-│       ├── associations.vue     # Annuaire associations TSA
-│       ├── livres/
-│       │   ├── index.vue        # Page livres TSA
-│       │   └── suggerer.vue     # Formulaire suggestion livre
-│       ├── apropos.vue
-│       ├── contact.vue
-│       ├── mentions.vue
-│       └── admin/
-│           ├── login.vue        # Connexion admin
-│           ├── index.vue        # Dashboard admin praticiens
-│           ├── modifier.vue     # Modifier une fiche praticien
-│           └── livres.vue       # Admin livres TSA
+### Lancer le projet
 
-api/                             # API PHP (à déployer sur LWS)
-├── config.php                   # Connexion BDD + fonctions communes
-├── auth.php                     # Authentification admin
-├── praticiens.php               # CRUD praticiens (public)
-├── associations.php             # Lecture associations (public)
-├── admin_praticiens.php         # Gestion admin praticiens
-├── suggestions.php              # Suggestions de praticiens
-├── signalements.php             # Signalements
-├── livres.php                   # CRUD livres
-├── suggestions_livres.php       # Suggestions de livres
-└── openlibrary_proxy.php        # Proxy PHP vers Open Library
+```bash
+docker compose up -d
 ```
 
-## Base de données
+Le tableau de bord sera accessible sur **http://localhost:3025**.
 
-### Tables annuaire
-- `praticiens` — fiches praticiens publiées
-- `suggestions` — suggestions de praticiens en attente de validation
-- `signalements` — signalements d'erreurs sur les fiches
-- `admin_sessions` — sessions administrateur
+### Changer le mot de passe
 
-### Tables associations
-- `associations` — associations TSA publiées (source AIS Apache 2.0)
+Modifiez `NUXT_ADMIN_PASSWORD` dans `docker-compose.yml` :
 
-### Tables livres
-- `livres` — livres publiés (classiques + suggestions validées)
-- `suggestions_livres` — suggestions de livres en attente de validation
+```yaml
+environment:
+  - NUXT_ADMIN_PASSWORD=votre-mot-de-passe
+```
+
+Puis relancez :
+
+```bash
+docker compose up -d --build
+```
 
 ## Développement local
 
@@ -123,66 +56,8 @@ npm install
 npm run dev
 ```
 
-Le site sera accessible sur `http://localhost:3000`.
-
-> **Note** : Les données sont chargées côté client (`server: false`). En local, les appels vers `annuaire-tsa.fr` peuvent être bloqués par CORS — les données seront visibles une fois déployé sur LWS.
-
-## Déploiement sur LWS
-
-1. Générer les fichiers statiques :
-```bash
-npm run generate
-```
-
-2. Uploader via FTP à la racine `htdocs/` :
-   - Le contenu du dossier `.output/public/`
-   - Le dossier `api/`
-   - Le fichier `.htaccess`
-
-3. Renseigner les identifiants BDD dans `api/config.php`
-
-4. Générer un hash bcrypt pour le mot de passe admin :
-```bash
-php -r "echo password_hash('votre_mdp', PASSWORD_BCRYPT);"
-```
-
-5. Coller le hash dans `api/config.php` (`ADMIN_HASH`)
-
-> Le sitemap est généré automatiquement à chaque build via `@nuxtjs/sitemap`. Il inclut toutes les pages statiques + les pages `/departement/XX` dynamiquement depuis l'API. Bing est notifié automatiquement via IndexNow.
-
-## Accès admin
-
-- **Admin annuaire** : `https://www.annuaire-tsa.fr/admin/login`
-- **Admin livres** : `https://www.annuaire-tsa.fr/admin/livres`
-
-## Sécurité
-
-- Injection SQL impossible (PDO + prepared statements)
-- XSS impossible côté client (Vue.js échappe par défaut)
-- Rate limiting sur tous les formulaires publics (5 req/heure/IP)
-- Validation stricte des entrées (longueur, type, URLs)
-- HTTPS forcé + headers de sécurité (HSTS, X-Frame-Options, CSP…)
-- Authentification bcrypt + tokens de session 256 bits
-- Timeout de session automatique (2h d'inactivité)
-- Sanitisation HTML des notes (protection XSS sur le contenu Tiptap)
-- Anti-spam honeypot sur les formulaires
-
-## Historique des versions
-
-| Version | Contenu |
-|---|---|
-| V1 | Annuaire TSA — version initiale HTML |
-| V2 | Refonte design, ajout signalements et confirmations communautaires |
-| V3 | Ajout du site Livres TSA intégré |
-| V4 | Réécriture complète en Nuxt 4 + Vue 3, admin moderne, sécurité renforcée |
-| V4.1 | PWA, accessibilité (OpenDyslexic, contraste, taille police), pages département, pagination, partage fiche |
-| V4.2 | Ajout page Associations TSA (290 associations, source AIS Apache 2.0), schema.org WebSite, corrections SEO |
+Accessible sur **http://localhost:3000**.
 
 ## Vibe coding
 
 Ce projet a été entièrement vibecoder avec [Claude Code](https://claude.ai/code) (IA d'Anthropic). La vision, les choix fonctionnels et les orientations sont humains — le code a été généré par l'IA.
-
-## Licence
-
-Projet open source — données hébergées en France — RGPD
-Fait avec ♥ pour les familles concernées par les TSA
