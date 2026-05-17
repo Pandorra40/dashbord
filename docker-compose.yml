@@ -7,5 +7,8 @@ services:
     environment:
       - ADMIN_PASSWORD=changez-moi
     volumes:
-      - ./server/data.json:/app/server/data.json
+      - tableau-bord-data:/app/server
+
+volumes:
+  tableau-bord-data:
     restart: unless-stopped
