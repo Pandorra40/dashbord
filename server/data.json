@@ -1,0 +1,40 @@
+{
+  "services": [
+    {
+      "id": 1,
+      "nom": "Jellyfin",
+      "url": "http://localhost:8096",
+      "icone": "jellyfin",
+      "description": "Serveur multimédia",
+      "categorie": "public",
+      "couleur": "#00A4DC"
+    },
+    {
+      "id": 2,
+      "nom": "Nginx Proxy Manager",
+      "url": "http://localhost:81",
+      "icone": "nginx",
+      "description": "Gestionnaire de proxy",
+      "categorie": "admin",
+      "couleur": "#009639"
+    },
+    {
+      "id": 3,
+      "nom": "WikiJS",
+      "url": "http://localhost:3000",
+      "icone": "wikijs",
+      "description": "Wiki personnel",
+      "categorie": "public",
+      "couleur": "#1976D2"
+    },
+    {
+      "id": 4,
+      "nom": "ZimaOS",
+      "url": "http://localhost",
+      "icone": "linux",
+      "description": "Système NAS",
+      "categorie": "admin",
+      "couleur": "#6366f1"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+services:
+  tableau-de-bord:
+    build: .
+    container_name: tableau-de-bord
+    ports:
+      - "3025:3025"
+    environment:
+      - ADMIN_PASSWORD=changez-moi
+    volumes:
+      - ./server/data.json:/app/server/data.json
+    restart: unless-stopped
