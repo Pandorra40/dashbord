@@ -9,6 +9,7 @@ services:
     volumes:
       - tableau-bord-data:/app/server
 
+    restart: unless-stopped
+
 volumes:
   tableau-bord-data:
-    restart: unless-stopped
